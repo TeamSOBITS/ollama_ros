@@ -15,6 +15,7 @@ class ChatAction:
     def __init__(self):
         Popen(["xterm", "-font", "r16", "-fg", "floralwhite", "-bg", "darkslateblue", "-e", "ollama", "serve"])
         self.model_ = rospy.get_param("/ollama_action_server/model_name", "llama3")
+        self.stack_chat_ = rospy.get_param("/ollama_action_server/stack_chat", True)
         self.ollama_client_ = ollama.AsyncClient()
         self.chat_messages_ = {}
         self.build_prompt()
@@ -51,6 +52,8 @@ class ChatAction:
         result = ChatOllamaResult(result=res, elapsed_time=t)
         if goal.is_service:
             print(res)
+        if (self.stack_chat_ != True):
+            self.chat_messages_[goal.room_name] = self.chat_messages_[goal.room_name][:-2]
         self.action_server_.set_succeeded(result)
         self.end_flag_ = False
         print("\n===============================================")
