@@ -1,32 +1,18 @@
 <?xml version="1.0"?>
-<?xml-model
-  href="http://download.ros.org/schema/package_format3.xsd"
-  schematypens="http://www.w3.org/2001/XMLSchema"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>ollama_python</name>
+  <name>ollama_ros</name>
   <version>0.0.0</version>
-  <description>
-    This package allows the use of ollama_python in ROS
-  </description>
-  <maintainer email="todo@gmail.com">Fumiya ONO</maintainer>
+  <description>TODO: Package description</description>
+  <maintainer email="ksuzuki9541@gmail.com">sobits</maintainer>
+  <license>TODO: License declaration</license>
 
-  <license>BSD</license>
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
 
-  <url type="website">https://home.soka.ac.jp/~choi/index.html</url>
-  <url type="repository">https://github.com/TeamSOBITS/ollama_python</url>
-  <url type="bugtracker">https://github.com/TeamSOBITS/ollama_python/issues</url>
-  <author email="choi.7f@gmail.com">Team SOBITS</author>
-
-  <buildtool_depend>catkin</buildtool_depend>
-
-  <depend>rospy</depend>
-  <depend>std_msgs</depend>
-  <build_depend>message_generation</build_depend>
-  <exec_depend>message_runtime</exec_depend>
-
-  <!-- The export tag contains other, unspecified, tags -->
   <export>
-    <!-- Other tools can request additional information be placed here -->
-
+    <build_type>ament_python</build_type>
   </export>
 </package>
