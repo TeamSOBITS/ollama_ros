@@ -21,6 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
             'ollama_action_server = ollama_ros.ollama_action_server:main',
+            'ollama_action_server_vlm = ollama_ros.ollama_action_server_vlm:main',
             'model_downloader = ollama_ros.model_downloader:main',
         ],
     },
