@@ -14,7 +14,6 @@ from sobits_interfaces.action import ChatLlmRecognition
 import yaml
 
 
-
 class ChatAction(Node):
     def __init__(self):
         super().__init__("ollama_action_server")
@@ -27,12 +26,12 @@ class ChatAction(Node):
         # Get parameters
         self.model_name_ = self.get_parameter('model_name').get_parameter_value().string_value
         self.stack_chat_ = self.get_parameter('stack_chat').get_parameter_value().bool_value
-        with open("/home/sobits/colcon_ws/src/ollama_ros/prompt/base_prompt.yaml", "r") as file:
+        with open("/home/sobits/colcon_ws/src/ollama_python/prompt/base_prompt.yaml", "r") as file:
+        # with open("/home/sobits/colcon_ws/src/ollama_ros/prompt/base_prompt.yaml", "r") as file:
             self.prompt_ = yaml.safe_load(file)
         self.ollama_client_ = ollama.AsyncClient()
         self.chat_messages_ = {}
         self.build_prompt()
-        self.end_flag_ = False
         self.action_server_ = ActionServer(
             self,
             ChatLlmRecognition,
@@ -60,6 +59,7 @@ class ChatAction(Node):
         message = {'role': 'assistant', 'content': ''}
         model = goal_handle.request.room_name
         service_flag = goal_handle.request.is_service
+        feedback.end_flag = False
         async for result in await self.ollama_client_.chat(model=self.model_name_, messages=self.chat_messages_[model], stream=True):
             if goal_handle.is_cancel_requested:
                 goal_handle.canceled()
@@ -68,22 +68,21 @@ class ChatAction(Node):
             if result['done']:
                 self.chat_messages_[model].append(message)
                 elapsed_time = time.time() - starting_time
-                self.end_flag_ = True
-                feedback.end_flag = self.end_flag_
+                feedback.end_flag = True
                 goal_handle.publish_feedback(feedback)
                 return elapsed_time, message['content']
 
             content = result['message']['content']
             message['content'] += content
-            if service_flag:
-                self.get_logger().info(content)
+            if (service_flag != True):
+                print(content)
                 feedback.wip_result = message['content']
                 goal_handle.publish_feedback(feedback)
 
     async def chat_ollama_callback(self, goal_handle):
         feedback = ChatLlmRecognition.Feedback()
         response = ChatLlmRecognition.Result()
-        self.get_logger().info("===============================================")
+        print("===============================================")
         if ((goal_handle.request.room_name in self.chat_messages_.keys()) != True):
             self.chat_messages_[goal_handle.request.room_name] = []
         self.chat_messages_[goal_handle.request.room_name].append({'role': 'user', 'content': goal_handle.request.request})
@@ -98,12 +97,11 @@ class ChatAction(Node):
         response.elapsed_time = t
         response.result = res
         if goal_handle.request.is_service:
-            self.get_logger().info(res)
+            print(res)
         if (self.stack_chat_ != True):
             self.chat_messages_[goal_handle.request.room_name] = self.chat_messages_[goal_handle.request.room_name][:-2]
         goal_handle.succeed()
-        self.end_flag_ = False
-        self.get_logger().info("\n===============================================")
+        print("\n===============================================")
         return response
     
 

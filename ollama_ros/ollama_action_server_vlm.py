@@ -28,7 +28,8 @@ class ChatAction(Node):
         self.model_name_ = self.get_parameter('model_name').get_parameter_value().string_value
         self.stack_chat_ = self.get_parameter('stack_chat').get_parameter_value().bool_value
         self.image_ = self.get_parameter('image').get_parameter_value().string_value
-        with open("/home/sobits/colcon_ws/src/ollama_ros/prompt/base_prompt.yaml", "r") as file:
+        with open("/home/sobits/colcon_ws/src/ollama_python/prompt/base_prompt.yaml", "r") as file:
+        # with open("/home/sobits/colcon_ws/src/ollama_ros/prompt/base_prompt.yaml", "r") as file:
             self.prompt_ = yaml.safe_load(file)
         self.ollama_client_ = ollama.AsyncClient()
         self.chat_messages_ = {}
@@ -76,18 +77,19 @@ class ChatAction(Node):
 
             content = result['message']['content']
             message['content'] += content
-            if service_flag:
-                self.get_logger().info(content)
+            if (service_flag != True):
+                print(content)
                 feedback.wip_result = message['content']
                 goal_handle.publish_feedback(feedback)
 
     async def chat_ollama_callback(self, goal_handle):
         feedback = ChatLlmRecognition.Feedback()
         response = ChatLlmRecognition.Result()
-        self.get_logger().info("===============================================")
+        print("===============================================")
         if ((goal_handle.request.room_name in self.chat_messages_.keys()) != True):
             self.chat_messages_[goal_handle.request.room_name] = []
-        self.chat_messages_[goal_handle.request.room_name].append({'role': 'user', 'content': goal_handle.request.request, 'images' : ['/home/sobits/colcon_ws/src/ollama_ros/images/' + self.image_]})
+        self.chat_messages_[goal_handle.request.room_name].append({'role': 'user', 'content': goal_handle.request.request, 'images' : ['/home/sobits/colcon_ws/src/ollama_python/images/' + self.image_]})
+        # self.chat_messages_[goal_handle.request.room_name].append({'role': 'user', 'content': goal_handle.request.request, 'images' : ['/home/sobits/colcon_ws/src/ollama_ros/images/' + self.image_]})
 
         try:
             t, res = asyncio.run(self.dynamic_chat(goal_handle, feedback))
@@ -99,12 +101,12 @@ class ChatAction(Node):
         response.elapsed_time = t
         response.result = res
         if goal_handle.request.is_service:
-            self.get_logger().info(res)
+            print(res)
         if (self.stack_chat_ != True):
             self.chat_messages_[goal_handle.request.room_name] = self.chat_messages_[goal_handle.request.room_name][:-2]
         goal_handle.succeed()
         self.end_flag_ = False
-        self.get_logger().info("\n===============================================")
+        print("\n===============================================")
         return response
     
 
