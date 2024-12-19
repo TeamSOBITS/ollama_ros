@@ -9,7 +9,7 @@ def generate_launch_description():
             name='ollama_action_server',
             output='screen',
             parameters=[
-                {'model_name': 'llava-phi3:latest'},
+                {'model_name': 'llava-phi3'},
                 {'stack_chat': "true"},
             ]
         ),

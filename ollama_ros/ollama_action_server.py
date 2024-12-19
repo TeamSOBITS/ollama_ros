@@ -63,7 +63,7 @@ class ChatAction(Node):
         async for result in await self.ollama_client_.chat(model=self.model_name_, messages=self.chat_messages_[model], stream=True):
             if goal_handle.is_cancel_requested:
                 goal_handle.canceled()
-                self.get_logger().info('Goal canceled')
+                print('\033[31mGoal canceled\033[0m')
                 return None
             if result['done']:
                 self.chat_messages_[model].append(message)
@@ -90,7 +90,7 @@ class ChatAction(Node):
         try:
             t, res = asyncio.run(self.dynamic_chat(goal_handle, feedback))
         except Exception as e:
-            self.get_logger().error(f"Error occurred: {e}")
+            print(f"\033[31mError occurred: {e}\033[0m")
             goal_handle.abort()  # 例外が発生した場合、明示的にゴールを中止
             response.result = "None"
             return response

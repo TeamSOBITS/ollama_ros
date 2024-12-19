@@ -9,7 +9,8 @@ setup(
     version='0.0.0',
     packages=find_packages(exclude=['test']),
     data_files=[
-        (os.path.join('share', package_name), glob('launch/*.py')),
+        (os.path.join('share', package_name, 'launch'), glob('launch/*.py')),
+        (os.path.join('share', package_name, 'prompt'), glob('prompt/*.yaml')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,

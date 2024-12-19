@@ -35,12 +35,8 @@ class ChatAction(Node):
         self.chat_messages_ = {}
         self.build_prompt()
         self.end_flag_ = False
-        self.action_server_ = ActionServer(
-            self,
-            ChatLlmRecognition,
-            "ollama_action",
-            execute_callback=self.chat_ollama_callback,
-            callback_group=ReentrantCallbackGroup(),
+        self.action_server_ = ActionServer(self, ChatLlmRecognition, "/ollama_action/llm",
+            execute_callback=self.chat_ollama_callback, callback_group=ReentrantCallbackGroup(),
             goal_callback=self.goal_callback,
             cancel_callback=self.cancel_callback)
         self.get_logger().info('Ollama Server is ready and waiting for service requests.')    
@@ -65,7 +61,7 @@ class ChatAction(Node):
         async for result in await self.ollama_client_.chat(model=self.model_name_, messages=self.chat_messages_[model], stream=True):
             if goal_handle.is_cancel_requested:
                 goal_handle.canceled()
-                self.get_logger().info('Goal canceled')
+                print('\033[31mGoal canceled\033[0m', flush=True)
                 return None
             if result['done']:
                 self.chat_messages_[model].append(message)
@@ -78,14 +74,14 @@ class ChatAction(Node):
             content = result['message']['content']
             message['content'] += content
             if (service_flag != True):
-                print(content)
+                print(content, flush=True)
                 feedback.wip_result = message['content']
                 goal_handle.publish_feedback(feedback)
 
     async def chat_ollama_callback(self, goal_handle):
         feedback = ChatLlmRecognition.Feedback()
         response = ChatLlmRecognition.Result()
-        print("===============================================")
+        print("===============================================", flush=True)
         if ((goal_handle.request.room_name in self.chat_messages_.keys()) != True):
             self.chat_messages_[goal_handle.request.room_name] = []
         self.chat_messages_[goal_handle.request.room_name].append({'role': 'user', 'content': goal_handle.request.request, 'images' : ['/home/sobits/colcon_ws/src/ollama_python/images/' + self.image_]})
@@ -94,19 +90,19 @@ class ChatAction(Node):
         try:
             t, res = asyncio.run(self.dynamic_chat(goal_handle, feedback))
         except Exception as e:
-            self.get_logger().error(f"Error occurred: {e}")
+            print(f"\033[31mError occurred: {e}\033[0m", flush=True)
             goal_handle.abort()  # 例外が発生した場合、明示的にゴールを中止
-            response.result = "None"
+            response.result = ""
             return response
         response.elapsed_time = t
         response.result = res
         if goal_handle.request.is_service:
-            print(res)
+            print(res, flush=True)
         if (self.stack_chat_ != True):
             self.chat_messages_[goal_handle.request.room_name] = self.chat_messages_[goal_handle.request.room_name][:-2]
         goal_handle.succeed()
         self.end_flag_ = False
-        print("\n===============================================")
+        print("\n===============================================", flush=True)
         return response
     
 
