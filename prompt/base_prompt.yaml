@@ -1,11 +1,13 @@
 # 事前に会話を定義しておくことができるyamlファイル
 sobit_mini:                                             # sobit_miniという部屋では．．．
-  - {user     : "My name is SOBIT MINI."}             # 「私の名前はSOBIT MINIです」とUser側から言ったら，，，  
-  - {assistant: "Nice to meet you SOBIT MINI!"}       # 「よろしくね，SOBIT MINIさん」と言っている会話を予め定義しているので
-                                                  # sobit_miniという部屋を指定すればこの続きから会話できます
+              # 「私の名前はこの画像のようなSOBIT MINIというロボットです」  
+  - {user     : "My name is SOBIT MINI. I am a robot like this picture.", image: ["sobit_mini.png"]} # 画像は相対パスで書けます
+              # 「よろしくね，SOBIT MINIさん!あなたは目が大きくて人間のように2本の腕を持つ可愛らしい見た目をしているね！」
+  - {assistant: "Nice to meet you SOBIT MINI! You have big eyes and a pretty appearance with two arms like a human being!"}
+    # sobit_miniという部屋を指定すればこの続きから会話できます
 
 team_introduce:               # team_introduceという別の部屋も準備している
-  - {user     : "Our team name is SOBITS."}
+  - {user     : "Our team name is SOBITS."}  # imageを入れない場合＝LLM
   - {assistant: "I love it! SOBITS sounds like a unique and fun team name."}
   - {user     : "SOBITS consists of about 30 people."}
   - {assistant: "A team of 30 people! That's impressive!"}

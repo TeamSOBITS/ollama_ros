@@ -10,7 +10,7 @@ setup(
     packages=find_packages(exclude=['test']),
     data_files=[
         (os.path.join('share', package_name, 'launch'), glob('launch/*.py')),
-        (os.path.join('share', package_name, 'prompt'), glob('prompt/*.yaml')),
+        (os.path.join('share', package_name, 'prompt'), glob('prompt/*')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -24,6 +24,7 @@ setup(
             'ollama_action_server = ollama_ros.ollama_action_server:main',
             'ollama_action_server_vlm = ollama_ros.ollama_action_server_vlm:main',
             'model_downloader = ollama_ros.model_downloader:main',
+            'catch_img = ollama_ros.catch_img:main',
         ],
     },
 )

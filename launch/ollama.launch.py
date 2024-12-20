@@ -1,3 +1,5 @@
+import os
+from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch_ros.actions import Node
 
@@ -9,8 +11,7 @@ def generate_launch_description():
             name='ollama_action_server',
             output='screen',
             parameters=[
-                {'model_name': 'llava-phi3'},
-                {'stack_chat': "true"},
+                {'prompt_file': os.path.join(get_package_share_directory("ollama_ros"), 'prompt', 'base_prompt.yaml')},
             ]
         ),
     ])
