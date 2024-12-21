@@ -1,4 +1,0 @@
-<!-- model_download.launch -->
-<launch>
-    <node name="model_downloader" pkg="ollama_python" type="model_downloader.py" output="screen"/>
-</launch>

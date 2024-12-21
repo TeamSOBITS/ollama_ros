@@ -36,9 +36,6 @@ class ChatAction(Node):
         self.ollama_client_ = ollama.AsyncClient()
         self.chat_messages_ = {}
         self.build_prompt()
-        print("\033[31m", flush=True)
-        print(self.chat_messages_, flush=True)
-        print("\033[0m", flush=True)
         self.action_server_ = ActionServer(self, ChatLlmRecognition, "/ollama_action",
             execute_callback=self.chat_ollama_callback, callback_group=ReentrantCallbackGroup(),
             goal_callback=self.goal_callback,
@@ -82,7 +79,6 @@ class ChatAction(Node):
         feedback = ChatLlmRecognition.Feedback()
         response = ChatLlmRecognition.Result()
         print("===============================================", flush=True)
-        print(self.chat_messages_[goal_handle.request.room_name], flush=True)
         if ((goal_handle.request.room_name in self.chat_messages_.keys()) != True):
             self.chat_messages_[goal_handle.request.room_name] = []
         if (len(goal_handle.request.image) == 0):
@@ -104,9 +100,9 @@ class ChatAction(Node):
             t, res = asyncio.run(self.dynamic_chat(goal_handle, feedback))
         except Exception as e:
             print(f"\033[31mError occurred: {e}\033[0m", flush=True)
-            goal_handle.abort()  # 例外が発生した場合、明示的にゴールを中止
             response.elapsed_time = 0
             response.result = ""
+            goal_handle.abort()  # 例外が発生した場合、明示的にゴールを中止
             return response
 
         response.elapsed_time = t
@@ -117,7 +113,6 @@ class ChatAction(Node):
             self.chat_messages_[goal_handle.request.room_name] = self.chat_messages_[goal_handle.request.room_name][:-1]
         goal_handle.succeed()
         print("\n===============================================", flush=True)
-        print(self.chat_messages_[goal_handle.request.room_name], flush=True)
         return response
     
 
@@ -129,12 +124,12 @@ class ChatAction(Node):
                 if ("user" in list(talk.keys())):
                     self.chat_messages_[str(rn)] += [{"role": "user", "content": talk["user"]}]
                     if ("image" in list(talk.keys())):
-                        self.chat_messages_[str(rn)][-1]["image"] = []
+                        self.chat_messages_[str(rn)][-1]["images"] = []
                         for img in talk["image"]:
                             if (img[0] == "/"):
-                                self.chat_messages_[str(rn)][-1]["image"] += [img]
+                                self.chat_messages_[str(rn)][-1]["images"] += [img]
                             else:
-                                self.chat_messages_[str(rn)][-1]["image"] += [self.yaml_folder_path_ + img]
+                                self.chat_messages_[str(rn)][-1]["images"] += [self.yaml_folder_path_ + img]
                 else:
                     self.chat_messages_[str(rn)] += [{"role": "assistant", "content": talk["assistant"]}]
 

@@ -18,7 +18,7 @@ class ModelDownloader(Node):
         time.sleep(1)
         self.tk = Tkinter.Tk()
         # モデルの一覧
-        self.can_download_models_info = ["llama3.3", "llama3.2-vision", "phi3", "llava", "minicpm-v", "dbrx", "dolphin-mixtral", "llama2-chinese", "llava-llama3", "llava-phi3"]
+        self.can_download_models_info = ["llama3.3", "llama3.2", "llama3.2-vision", "phi3", "llava", "minicpm-v", "dbrx", "dolphin-mixtral", "llama2-chinese", "llava-llama3", "llava-phi3"]
         self.download_models_flag = []
         self.reset_models_info()
         self.iconfile = Tkinter.PhotoImage(file="/home/" + str(getpass.getuser()) + "/colcon_ws/src/ollama_python/img/icon.png")
