@@ -11,6 +11,7 @@ setup(
     data_files=[
         (os.path.join('share', package_name, 'launch'), glob('launch/*.py')),
         (os.path.join('share', package_name, 'prompt'), glob('prompt/*')),
+        (os.path.join('share', package_name, 'img'), glob('img/*')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
