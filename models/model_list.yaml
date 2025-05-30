@@ -1,0 +1,16 @@
+# モデルの一覧
+models:
+  - "llama3"
+  - "llama3.3"
+  - "llama3.2"
+  - "llama3.2-vision"
+  - "deepseek-r1"
+  - "phi3"
+  - "phi4"
+  - "llava"
+  - "minicpm-v"
+  - "dbrx"
+  - "dolphin-mixtral"
+  - "llama2-chinese"
+  - "llava-llama3"
+  - "llava-phi3"

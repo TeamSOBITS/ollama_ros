@@ -8,6 +8,7 @@ import ollama
 import tkinter as Tkinter
 from subprocess import Popen
 from ament_index_python.packages import get_package_share_directory
+import yaml
 
 import getpass
 
@@ -18,8 +19,10 @@ class ModelDownloader(Node):
         self.get_logger().info("ModelDownloader")
         time.sleep(1)
         self.tk = Tkinter.Tk()
-        # モデルの一覧
-        self.can_download_models_info = ["llama3", "llama3.3", "llama3.2", "llama3.2-vision", "deepseek-r1", "phi3", "phi4", "llava", "minicpm-v", "dbrx", "dolphin-mixtral", "llama2-chinese", "llava-llama3", "llava-phi3"]
+
+        with open(get_package_share_directory("ollama_ros") + "/models/model_list.yaml", "r") as file:
+            self.can_download_models_info = yaml.safe_load(file)["models"]
+
         self.download_models_flag = []
         self.reset_models_info()
         self.iconfile = Tkinter.PhotoImage(file=get_package_share_directory("ollama_ros") + "/img/icon.png")

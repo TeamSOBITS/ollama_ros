@@ -36,7 +36,7 @@ class ChatAction(Node):
         self.ollama_client_ = ollama.AsyncClient()
         self.chat_messages_ = {}
         self.build_prompt()
-        self.action_server_ = ActionServer(self, ChatLlmRecognition, "/ollama_action",
+        self.action_server_ = ActionServer(self, ChatLlmRecognition, "ollama_action",
             execute_callback=self.chat_ollama_callback, callback_group=ReentrantCallbackGroup(),
             goal_callback=self.goal_callback,
             cancel_callback=self.cancel_callback)
