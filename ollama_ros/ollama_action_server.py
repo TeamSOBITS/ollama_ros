@@ -89,8 +89,21 @@ class ChatAction(Node):
             for i in range(len(goal_handle.request.image)):
                 img = goal_handle.request.image[i]
                 image = self.bridge_.imgmsg_to_cv2(img)
-                if img.encoding == "rgb8":
-                    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                # if img.encoding == "rgb8":
+                #     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+                if img.encoding == 'bgr8':
+                    pass
+                elif img.encoding == 'bgra8':
+                    image     = cv2.cvtColor(image, cv2.COLOR_RGBA2RGB)
+                elif img.encoding == 'rgba8':
+                    image     = cv2.cvtColor(image, cv2.COLOR_BGRA2RGB)
+                elif img.encoding == 'rgb8':
+                    image     = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                else:
+                    print("\033[31mEncoding ERROR\033[0m")
+                    return response
+
                 save_file_name = self.yaml_folder_path_ + "result_" + str(dt_now.year) + "_" + str(dt_now.month) + "_" + str(dt_now.day) + "_" + str(dt_now.hour) + "_" + str(dt_now.minute) + "_" + str(dt_now.second) + "_label" + str(i) + ".png"
                 cv2.imwrite(save_file_name, image)
                 images += [save_file_name]
