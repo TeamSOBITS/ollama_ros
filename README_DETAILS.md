@@ -4,20 +4,24 @@
 
 ### メッセージ型について
 
-Actionlib通信にて呼び出すメッセージの構成は以下のようになっています．
+Action通信にて呼び出すメッセージの構成は以下のようになっています．
 ```sh
+# ChatLlmRecognition.action
 # Goal
-string request        # リクエストメッセージ
-string room_name      # 部屋名指定
-bool is_service       # Feedbackを送るかどうか
+string room_name            # 部屋名指定
+string request              # リクエストメッセージ
+sensor_msgs/Image[] image   # 入力画像のリスト
+string[] sound_file_path    # 入力音声ファイルのパスのリスト
+string model_name           # modelの名前
+bool is_stack               # このやり取りをroom_nameにメモリーするか
 ---
 # Result
-string result         # 返答メッセージ
-float64 elapsed_time  # 返答まで何秒かかったか
+string result               # 返答メッセージ
+float64 elapsed_time        # 返答まで何秒かかったか
 ---
 # Feedback
-string wip_result     # 途中経過のメッセージ
-bool end_flag         # 途中経過の送信が終了したかどうか
+string wip_result           # 途中経過のメッセージ
+bool end_flag               # 途中経過の送信がが終了したかどうか
 ```
 
 
@@ -88,17 +92,10 @@ sobit_miniという`room_name`ではUserの名前がSOBIT MINIとしてシステ
 
 1. ActionServerを立ち上げる
     ```console
-    $ roslaunch ollama_python ollama.launch
+    ros2 launch ollama_ros ollama.launch.py
     ```
-> [!IMPORTANT]
-> モデルの指定などは忘れないでください．
 
-2. クライアントを実行します
-    ```console
-    $ rosrun ollama_python ollama_action_client.py
-    # or
-    $ rosrun ollama_python ollama_service_client.py
-    ```
+2. アクションクライアントを実行します
 
 そこで`room_name`を`default`にして，`request`に「Do you know my name?」と打ってみてください．
 
@@ -117,3 +114,6 @@ sobit_miniという`room_name`ではUserの名前がSOBIT MINIとしてシステ
 
 すると「あなたの名前はSOBIT MINIですね」という趣旨の返答が得られたと思います．
 これは会話履歴が部屋ごとに蓄積させているので，Serverのlaunchを切らない限り部屋名の指定さえすれば，何度でも事前プロンプトや会話の続きから，使うことができます．
+
+> [!IMPORTANT]
+> 使用するモデルによっては文章だけでなく，画像や音声も送ることができます．
