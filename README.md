@@ -113,7 +113,7 @@
 
 ### モデルのダウンロード
 
-1. [model_download.launch](/launch/model_download.launch.py)を起動する
+1. [model_download.launch.py](launch/model_download.launch.py)を起動する
     ```console
     ros2 launch ollama_ros model_download.launch.py
     ```
