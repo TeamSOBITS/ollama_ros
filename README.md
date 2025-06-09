@@ -45,7 +45,7 @@
 
 本レポジトリは，オフラインのローカルのみで大規模言語モデル(LLM:Large Language Models)を動かすことができるパッケージです．\
 処理速度はCPU/GPUで変わりますが，モデルによってはCPUでも問題なく動きます．\
-特に，大規模言語モデルは1単語ずつ返答が構築されていく仕組みのため，呼び出しから返答までの間に途中経過が存在することから，ROSのActionlib通信を用います．
+特に，大規模言語モデルは1単語ずつ返答が構築されていく仕組みのため，呼び出しから返答までの間に途中経過が存在することから，ROS2のAction通信を用います．
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
@@ -64,41 +64,40 @@
 
 | System | Version |
 | --- | --- |
-| Ubuntu | 20.04 (Focal Fossa) |
-| ROS    | Noetic Ninjemys     |
-| Python | >=3.8               |
-
-> [!NOTE]
-> `Ubuntu`や`ROS`のインストール方法に関しては，[SOBITS Manual](https://github.com/TeamSOBITS/sobits_manual#%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6)を参照してください．
+| Ubuntu | 22.04 (Jammy Jellyfish) |
+| ROS    | Humble Hawksbill    |
+| Python | >=3.10              |
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
 
 ### インストール方法
 
-1. ROSの`src`フォルダに移動します．
+1. ROS2の`src`フォルダに移動します．
     ```console
-    $ roscd
-    # もしくは，"cd ~/catkin_ws/"へ移動．
-    $ cd src/
+    cd ~/colcon_ws/src/
     ```
 2. 本レポジトリをcloneします．
     ```console
-    $ git clone https://github.com/TeamSOBITS/ollama_python
+    git clone -b humble-devel https://github.com/TeamSOBITS/ollama_ros
     ```
 3. レポジトリの中へ移動します．
     ```console
-    $ cd ollama_python/
+    cd ollama_ros/
     ```
 4. 依存パッケージをインストールします．
     ```console
-    $ bash install.sh
+    bash install.sh
     ```
 5. パッケージをコンパイルします．
     ```console
-    $ roscd
-    # もしくは，"cd ~/catkin_ws/"へ移動．
-    $ catkin_make
+    cd ~/colcon_ws/
+    ```
+    ```console
+    colcon build --symlink-install
+    ```
+    ```console
+    source ~/colcon_ws/install/setup.sh
     ```
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
@@ -114,9 +113,9 @@
 
 ### モデルのダウンロード
 
-1. [model_download.launch](/launch/model_download.launch)を起動する
+1. [model_download.launch](/launch/model_download.launch.py)を起動する
     ```console
-    $ roslaunch ollama_python model_download.launch
+    ros2 launch ollama_ros model_download.launch.py
     ```
 2. GUIのから使いたいモデルをダウンロードする\
   モデルのダウンロードは[download]をクリックしてください．
@@ -124,7 +123,13 @@
 > [!NOTE]
 > モデルはこれが全てではなく，[こちら](https://ollama.com/library)にあるものから抜選しています．(全て書くとGUIが膨大になってしまうのと，公式からの更新に対応できないため)\
 
-もしGUIにないものをdownloadしたい場合は，[model_downloader.py](scripts/model_downloader.py)の19行目にあるリストに追加してください．\
+もしGUIにないものをdownloadしたい場合は，[/models/model_list.yaml](models/model_list.yaml)に追加してください．\
+例：deepseek-r1というモデルのパラメータ数14bのモデルをダウンロードしたい場合
+```
+models:
+  - "deepseek-r1:14b"
+```
+
 既にモデルがダウンロードされている場合は削除([delete])，コピー([copy])，push([push])することができます．
 
 > [!WARNING]
@@ -142,34 +147,14 @@
 
 ### 会話をする
 
-1. [ollama.launch](launch/ollama.launch)にある`model_name`を上の[モデルのダウンロード](#モデルのダウンロード)でダウンロードしたモデルにします．
-以下は，llama3を指定した一例です．
-    ```xml
-    <arg name="model_name" default="llama3"/>
-    ```
-2. Serverを起動します．
-Actionlib通信を用いているため，返答文が生成されるまでの途中経過を確認できます．
-    ```console
-    $ roslaunch ollama_python ollama.launch
-    ```
-3. [任意]実際に呼び出してみましょう．
-    - Actionlib通信(途中経過から得るモード)で呼び出す
-      ```console
-      $ rosrun ollama_python ollama_action_client.py
-      ```
-    - Service通信(結果だけ得るモード)で呼び出す
-      ```console
-      $ rosrun ollama_python ollama_service_client.py
-      ```
-そこで，`room_name` >>> をなんでもいいですが，ここでは`default`としてみましょう．
-`request`になにか打ち込んでみましょう．ここでは一例として`Hello!`と送ってみました．
-
-<div align="center">
-  <img src="img/say_hello_demo.png" height="420">
-</div>
+1. [ollama.launch.py](launch/ollama.launch.py)を起動することでServerを起動します．
+   ```sh
+   ros2 launch ollama_ros ollama.launch.py
+   ```
+2. Action Clientを起動し，実際に呼び出す．
 
 > [!WARNING]
-> CPUでは処理が遅くなってしまうため，Actionlibで途中経過を見ながら待機していたほうがいいかもしれません．
+> CPUでは処理が遅くなってしまうため，Action通信で途中経過を見ながら待機していたほうがいいかもしれません．
 
 > [!NOTE]
 > 事前プロンプトの設定や`room_name`についての詳細は[こちら](README_DETAILS.md)を確認してください．
