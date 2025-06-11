@@ -1,6 +1,6 @@
 <a name="readme-top"></a>
 
-[JP](README.md) | [EN](README_en.md)
+[JA](README.md) | [EN](README_en.md)
 
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
@@ -8,7 +8,7 @@
 [![Issues][issues-shield]][issues-url]
 [![License][license-shield]][license-url]
 
-# OLLAMA Python for ROS
+# Ollama for ROS
 
 <!-- 目次 -->
 <details>
@@ -18,14 +18,13 @@
       <a href="#概要">概要</a>
     </li>
     <li>
-      <a href="#セットアップ">セットアップ</a>
+      <a href="#環境構築">環境構築</a>
       <ul>
         <li><a href="#環境条件">環境条件</a></li>
         <li><a href="#インストール方法">インストール方法</a></li>
       </ul>
     </li>
-    <li>
-      <a href="#実行・操作方法">実行・操作方法</a>
+    <li><a href="#実行操作方法">実行・操作方法</a></li>
       <ul>
         <li><a href="#モデルのダウンロード">モデルのダウンロード</a></li>
         <li><a href="#会話をする">会話をする</a></li>
@@ -50,8 +49,8 @@
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
 
-<!-- セットアップ -->
-## セットアップ
+<!-- 環境構築 -->
+## 環境構築
 
 ここで，本レポジトリのセットアップ方法について説明します．
 
@@ -167,7 +166,7 @@ models:
 
 現時点のバッグや新規機能の依頼を確認するために[Issueページ][issues-url] をご覧ください．
 
-<p align="right">(<a href="#readme-top">上に</a>)</p>
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
 
 <!-- 参考文献 -->
