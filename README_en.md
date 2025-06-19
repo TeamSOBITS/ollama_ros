@@ -163,7 +163,7 @@ If a model is already downloaded, you can delete ([delete]), copy ([copy]), or p
 > Processing may be slow on a CPU, so it might be better to wait while observing the progress via Action communication.
 
 > [!NOTE]
-> For details on setting up pre-prompts and `room_name`, please refer to [here](README_DETAILS.md).
+> For details on setting up pre-prompts and `room_name`, please refer to [here](README_DETAILS_en.md).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
