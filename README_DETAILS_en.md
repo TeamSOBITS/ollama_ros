@@ -1,114 +1,123 @@
-<sub>[Go back to README](README_en.md)</sub>
+<sub>[Back to README](README.md)</sub>
 
 ## Details
 
-### Message info
+### About Message Type
 
-The structure of the message called in Actionlib communication is as follows.
+The structure of the message called via Action communication is as follows:
 ```sh
+# ChatLlmRecognition.action
 # Goal
-string request        # Request message
-string room_name      # Room name selection
-bool is_service       # Feedback flag
+string room_name             # Specify room name
+string request               # Request message
+sensor_msgs/Image[] image    # List of input images
+string[] sound_file_path     # List of paths to input audio files
+string model_name            # Name of the model
+bool is_stack                # Whether to remember this interaction in room_name
 ---
 # Result
-string result         # Result message
-float64 elapsed_time  # Result duration
+string result                # Reply message
+float64 elapsed_time         # Time taken for the reply in seconds
 ---
 # Feedback
-string wip_result     # Mid-result message
-bool end_flag         # Feedback conclusion flag
+string wip_result            # Work-in-progress message
+bool end_flag                # Whether the transmission of work-in-progress message has ended
 ```
 
 
-### About `room_name`
+### What is `room_name`?
 
-`room_name` is a label that assigns a stock of conversations. For example, in Chat GPT, you can switch rooms for each conversation.
+`room_name` is a label used to assign conversation history.
+For example, in ChatGPT, you can switch rooms for each conversation.
 
-Here is an example of the state:
+Here's an example of such a state:
 
 ```yaml
 # Room A
-USER : Tell me about SOBITS
+USER : Tell me about SOBITS.
 GPT : As a large language model, I don't have knowledge about specific words.
-USER : I see. SOBITS is a team composed of students from Tsui Laboratory and Hagiwara Laboratory at Soka University
-GPT : Oh, I see! A joint team of two laboratories is wonderful!
+USER : I see. SOBITS is a team composed of students from Soka University's Cui Lab and Hagiwara Lab.
+GPT : Oh, I see! A joint team from two laboratories sounds wonderful!
 
 # Room B
-USER : Please answer questions about mathematics
-GPT : Of course. What kind of math question do you have?
-USER : Why can't we divide by zero?
-GPT : The operation of dividing by zero is not defined mathematically, so it has no meaning.
+USER : Please answer a question about mathematics.
+GPT : Certainly. What kind of math question do you have?
+USER : Why can't you divide by 0?
+GPT : Division by zero is not mathematically defined, so it is meaningless.
 ```
 
-Suppose there are two rooms, A and B. If the user asks "What is SOBITS?" in these two rooms, of course GPT can answer in room A. Here is an example of the answer:
+Suppose we have these two rooms, A and B.
+
+If the user asks "What is SOBITS?" in these two rooms, GPT in Room A can naturally answer it.
+
+Here are example responses:
 
 ```yaml
 # Room A
 USER : What is SOBITS?
-GPT : SOBITS is what you taught me earlier. It was a joint team of Tsui Laboratory and Hagiwara Laboratory, right? Was there any mistake?
+GPT : You just told me about SOBITS. It's a joint team from the Cui Lab and Hagiwara Lab, right? Was there a mistake?
 
 # Room B
 USER : What is SOBITS?
-GPT : I don't have knowledge about SOBITS. I might be able to answer if it was a math question.
+GPT : I don't have any knowledge about SOBITS. I might be able to answer if it's a math question.
 ```
+In this package, `room_name` corresponds to these Room A and Room B.\
+You can create any number of `room_name`s, and as long as the Server launch is not terminated, you can continue conversations in a previously specified room by simply designating its name.
 
-The `room_name` in this package corresponds to Room A and Room B. You can create as many `room_name` as you want, and as long as you don't cut off the server's launch, you can continue the conversation in the room by specifying the room name you have specified in the past.
 
+### Defining Pre-prompts
+As with `room_name` above, you can pre-define conversation history as if you had a prior conversation.\
+This can typically be defined in [base_prompt.yaml](prompt/base_prompt.yaml).
 
-### Add a pre-promp
-
-As mentioned above, you can define a history as if you had a conversation in advance by specifying `room_name`.
-Basically, you can define it in [base_prompt.yaml](prompt/base_prompt.yaml).
-
-Those are just an example, but I defined it as follows.
+Inside, as an example, it is defined as follows:
 
 ```yaml
-# yaml file where you can define a conversation in advance
-sobit_mini:                                         # In a room called sobit_mini...
-- {user     : "My name is SOBIT MINI."}             # If the User side says "My name is SOBIT MINI",...
-- {assistant: "Nice to meet you SOBIT MINI!"}       # Since we have already defined a conversation where we say "Nice to meet you, SOBIT MINI",
-                                                    # you can continue the conversation from this point by specifying the room sobit_mini
+# YAML file where conversations can be pre-defined
+sobit_mini:                                          # In the room named sobit_mini...
+- {user      : "My name is SOBIT MINI."}             # If the User says "My name is SOBIT MINI.", then...
+- {assistant: "Nice to meet you SOBIT MINI!"}        # Since the conversation "Nice to meet you, SOBIT MINI!" is pre-defined,
+                                                     # you can continue the conversation from this point by specifying the room name 'sobit_mini'.
 
-team_introduce:                                     # We also have another room called team_introduce
-- {user     : "Our team name is SOBITS."}
+team_introduce:                                      # Another room named team_introduce is also prepared
+- {user      : "Our team name is SOBITS."}
 - {assistant: "I love it! SOBITS sounds like a unique and fun team name."}
-- {user     : "SOBITS consists of about 30 people."}
+- {user      : "SOBITS consists of about 30 people."}
 - {assistant: "A team of 30 people! That's impressive!"}
+
 ```
 
-In the `room_name` "sobit_mini", you can proceed with the conversation with the system recognizing the User's name as SOBIT MINI.
-In another room, the `room_name` "team_introduce", we are explaining about Team SOBITS, and the system knows the team name and the number of people in the team.
+In the sobit_mini `room_name`, the conversation can proceed with the system recognizing the User's name as SOBIT MINI.
 
-Based on these, I will explain a simple operation method using rooms and pre-prompts.
+In another room, team_introduce, the system knows the team name and the number of people in the team because it contains an explanation about the SOBITS team.
 
-1. Launch the ActionServer.
+Based on this, let's explain a simple way to use rooms and pre-prompts.
+
+1. Start the ActionServer.
     ```console
-    $ roslaunch ollama_python ollama.launch
-    ```
-> [!IMPORTANT]
-> Do not forget to select the model in advance.
-
-2. Launch the ActionClient.
-    ```console
-    $ rosrun ollama_python ollama_action_client.py
-    # or
-    $ rosrun ollama_python ollama_service_client.py
+    ros2 launch ollama_ros ollama.launch.py
     ```
 
-Please try setting `room_name` to `default` and typing "Do you know my name?" in `request`.
+2. Execute the Action Client.
+
+Set `room_name` to `default` and type "Do you know my name?" in `request`.
 
 <div align="left">
 <img src="img/default_result.png" height="420">
 </div>
 
-The room named `default` is not pre-prompted and is not a room we just defined, so I think the response was "I don't know".
+Since the `default` room is not in the pre-prompts and was just defined, the reply should have been "I don't know."
 
-Please run the client again.
-This time, set the `room_name` to "sobit_mini" and try setting the `request` to "Do you know my name?" in the same way.
+Now, run the client again.
+
+This time, set `room_name` to sobit_mini and similarly set request to "Do you know my name?".
 
 <div align="left">
 <img src="img/sobit_mini_result.png" height="420">
 </div>
 
-As you can see, the response might be similar to "So, your name is SOBIT MINI". This is because the conversation history is accumulated for each room, so as long as you don't cut off the server's launch, you can use it as many times as you want from the pre-prompt or continuation of the conversation, as long as you specify the room name.
+You should have received a reply similar to "Your name is SOBIT MINI."\
+This is because conversation history is accumulated for each room. \
+As long as the Server launch is not terminated, you can resume conversations from pre-prompts or previous interactions simply by specifying the room name.
+
+> [!IMPORTANT]
+> Depending on the model used, you can send not only text but also images and audio.
