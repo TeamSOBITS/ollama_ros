@@ -1,6 +1,6 @@
 <a name="readme-top"></a>
 
-[JP](README.md) | [EN](README_en.md)
+[JA](README.md) | [EN](README_en.md)
 
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
@@ -8,9 +8,9 @@
 [![Issues][issues-shield]][issues-url]
 [![License][license-shield]][license-url]
 
-# OLLAMA Python for ROS
+# Ollama for ROS
 
-<!-- TABLE OF CONTENTS -->
+<!-- Table of Contents -->
 <details>
   <summary>Table of Contents</summary>
   <ol>
@@ -24,173 +24,159 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li>
-      <a href="#launch-and-usage">Launch and Usage</a>
+    <li><a href="#launch-and-usage">Launch and Usage</a></li>
       <ul>
-        <li><a href="#download-the-model">Download the model</a></li>
-        <li><a href="#lets-talk">Let's Talk</a></li>
+        <li><a href="#model-download">Model Download</a></li>
+        <li><a href="#conversation">Conversation</a></li>
       </ul>
     </li>
-    <li><a href="#milestone">Milestone</a></li>
+    <li><a href="#milestones">Milestones</a></li>
     <!-- <li><a href="#contributing">Contributing</a></li> -->
     <!-- <li><a href="#license">License</a></li> -->
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
+    <li><a href="#references">References</a></li>
   </ol>
 </details>
 
 
 
-<!-- INTRODUCTION -->
+<!-- Introduction -->
 ## Introduction
 
-This repository is a package that allows you to run Large Language Models (LLM) offline and locally only. 
-The processing speed varies depending on the CPU/GPU, but some models work fine with a CPU. 
-In particular, since large language models construct responses one word at a time, there is a process from the call to the response, so we use ROS's Actionlib communication.
+This repository provides a package that allows Large Language Models (LLMs) to run offline locally.
+
+Processing speed varies depending on whether a CPU or GPU is used, but some models run smoothly even on a CPU.
+
+Specifically, since LLMs construct responses word by word, there is an intermediate process between the call and the final response. 
+
+Therefore, this package uses ROS2 Action communication to handle this.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-<!-- GETTING STARTED -->
+<!-- Getting Started -->
 ## Getting Started
 
-This section describes how to set up this repository.
+This section explains how to set up this repository.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 ### Prerequisites
 
-First, please set up the following environment before proceeding to the next installation stage.
+First, ensure you have the following environment set up before proceeding to the installation steps.
 
 | System | Version |
-| ------ | -------------------- |
-| Ubuntu | 20.04 (Focal Fossa)  |
-| ROS    | Noetic Ninjemys      |
-| Python | >=3.8                |
-
-> [!NOTE]
-> If you need to install `Ubuntu` or `ROS`, please check our [SOBITS Manual](https://github.com/TeamSOBITS/sobits_manual#%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6).
+| --- | --- |
+| Ubuntu | 22.04 (Jammy Jellyfish) |
+| ROS    | Humble Hawksbill    |
+| Python | >=3.10              |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 ### Installation
 
-1. Go to the `src` folder of ROS.
+1. Navigate to your ROS2 src folder.
     ```console
-    $ roscd
-    # Or just use "cd ~/catkin_ws/" and change directory.
-    $ cd src/
+    cd ~/colcon_ws/src/
     ```
 2. Clone this repository.
     ```console
-    $ git clone https://github.com/TeamSOBITS/ollama_python
+    git clone -b humble-devel https://github.com/TeamSOBITS/ollama_ros
     ```
-3. Navigate into the repository.
+3. Move into the repository directory.
     ```console
-    $ cd ollama_python/
+    cd ollama_ros/
     ```
-4. Install the dependent packages.
+4. Install dependencies.
     ```console
-    $ bash install.sh
+    bash install.sh
     ```
 5. Compile the package.
     ```console
-    $ roscd
-    # Or just use "cd ~/catkin_ws/" and change directory.
-    $ catkin_make
+    cd ~/colcon_ws/
+    ```
+    ```console
+    colcon build --symlink-install
+    ```
+    ```console
+    source ~/colcon_ws/install/setup.sh
     ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-<!-- LAUNCH AND USAGE EXAMPLES -->
+<!-- Launch and Usage -->
 ## Launch and Usage
 
-Let's start with the execution process.
+This section explains how to use this repository.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-### Download the model
+### Model Download
 
-1. Launch [model_download.launch](/launch/model_download.launch)
-    ```sh
-    $ roslaunch ollama_python model_download.launch
+1. Launch [model_download.launch.py](launch/model_download.launch.py).
+    ```console
+    ros2 launch ollama_ros model_download.launch.py
     ```
-
-2. Download the model you want to use from the GUI.
-Click [download] to download the model.
+2. Download the desired model from the GUI.\
+  Click [download] to download the model.
 
 > [!NOTE]
-> Not all models are listed here. For a complete list, check it at [ollama.com/library](https://ollama.com/library). 
+> This is not an exhaustive list of all models; these are selected from [here](https://ollama.com/library).\
+> (Listing all would make the GUI too large and make it difficult to adapt to official updates).
 
-If you want to download a model that is not in the GUI, please add it to the list on line 19 of [model_downloader.py](scripts/model_downloader.py).
-If the model has already been downloaded, you can delete ([delete]), copy ([copy]), or push ([push]) it.
+If you want to download a model not available in the GUI, add it to [/models/model_list.yaml](models/model_list.yaml).
+
+Example: If you want to download the deepseek-r1 model with 14b parameters.
+
+```
+models:
+  - "deepseek-r1:14b"
+```
+
+If a model is already downloaded, you can delete ([delete]), copy ([copy]), or push ([push]) it.
 
 > [!WARNING]
-> Downloading the model will take some time. Please wait until the GUI is updated.
+> Model downloads may take some time. Please wait until the GUI updates.
 
 <div align="center">
   <img src="img/download_demo.png" height="420">
 </div>
 
 > [!NOTE]
-> For details and specific operation methods, please refer to the [original Ollama Python](https://github.com/ollama/ollama-python) and [ollama](https://github.com/ollama/ollama) github.
+> For more details and specific operations, please refer to the  [original ollama-python](https://github.com/ollama/ollama-python) and [ollama](https://github.com/ollama/ollama) repositories.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-### Let's Talk
+### Conversation
 
-1. Set the `model_name` in [ollama.launch](launch/ollama.launch) to any model you like that you downloaded in the [Download the model](#download-the-model) section.
-The following is an example where `llama3` is specified.
-    ```xml
-    <arg name="model_name" default="llama3"/>
-    ```
-
-2. Launch the Server.
-This uses Actionlib communication so that you can know the progress until the response sentence is generated.
-    ```console
-    $ roslaunch ollama_python ollama.launch
-    ```
-
-3. [Optional] Try calling it.
-    - Call with Actionlib communication (mode to get from the progress).
-      ```console
-      $ rosrun ollama_python ollama_action_client.py
-      ```
-    - Call with Service communication (mode to get only the result).
-      ```console
-      $ rosrun ollama_python ollama_service_client.py
-      ```
-
-Here, you can set `room_name` >>> to anything, but let's try `default` for now.
-Try typing something into the `request`. Here, as an example, I sent `Hello!`.
-
-<div align="center">
-  <img src="img/say_hello_demo.png" height="420">
-</div>
+1. Start the Server by launching [ollama.launch.py](launch/ollama.launch.py)．
+   ```sh
+   ros2 launch ollama_ros ollama.launch.py
+   ```
+2. Start the Server by launching.
 
 > [!WARNING]
-> Since the processing may be slow on the CPU, it might be better to wait while watching the progress with Actionlib.
+> Processing may be slow on a CPU, so it might be better to wait while observing the progress via Action communication.
 
 > [!NOTE]
-> Please check [here](README_DETAILS_en.md) for details about the pre-prompt settings and `room_name`.
+> For details on setting up pre-prompts and `room_name`, please refer to [here](README_DETAILS.md).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-<!-- MILESTONE -->
-## Milestone
-
-See the [open issues][issues-url] for a full list of proposed features (and known issues).
+<!-- Milestones -->
+## Milestones
+See the [Issues page][issues-url] for current bugs and feature requests.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
+<!-- References -->
+## References
 
 * [ollama](https://ollama.com/)
 * [ollama-python.git](https://github.com/ollama/ollama-python)
