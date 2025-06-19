@@ -1,4 +1,8 @@
-<sub>[Back to README](README.md)</sub>
+<a name="readme-top"></a>
+
+[JP](README_DETAILS.md) | [EN](README_DETAILS_en.md)
+
+<sub>[Back to README](README_en.md)</sub>
 
 ## Details
 
@@ -24,6 +28,7 @@ string wip_result            # Work-in-progress message
 bool end_flag                # Whether the transmission of work-in-progress message has ended
 ```
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### What is `room_name`?
 
@@ -64,6 +69,7 @@ GPT : I don't have any knowledge about SOBITS. I might be able to answer if it's
 In this package, `room_name` corresponds to these Room A and Room B.\
 You can create any number of `room_name`s, and as long as the Server launch is not terminated, you can continue conversations in a previously specified room by simply designating its name.
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Defining Pre-prompts
 As with `room_name` above, you can pre-define conversation history as if you had a prior conversation.\
@@ -121,3 +127,6 @@ As long as the Server launch is not terminated, you can resume conversations fro
 
 > [!IMPORTANT]
 > Depending on the model used, you can send not only text but also images and audio.
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
