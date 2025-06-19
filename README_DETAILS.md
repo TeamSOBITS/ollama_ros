@@ -1,3 +1,7 @@
+<a name="readme-top"></a>
+
+[JP](README_DETAILS.md) | [EN](README_DETAILS_en.md)
+
 <sub>[READMEへ戻る](README.md)</sub>
 
 ## 詳細
@@ -24,6 +28,7 @@ string wip_result           # 途中経過のメッセージ
 bool end_flag               # 途中経過の送信がが終了したかどうか
 ```
 
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
 ### `room_name`とは
 
@@ -63,6 +68,7 @@ GPT : SOBITSについて私は知識を持ち合わせていません．数学�
 このパッケージでの`room_name`はこの部屋Aや部屋Bに当てはまります．\
 `room_name`はいくつでも作ることができ，Serverのlaunchを切らない限りは過去に指定したことのある部屋名を指定すればその部屋での会話の続きができます．
 
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
 ### 事前プロンプトを定義
 
@@ -117,3 +123,5 @@ sobit_miniという`room_name`ではUserの名前がSOBIT MINIとしてシステ
 
 > [!IMPORTANT]
 > 使用するモデルによっては文章だけでなく，画像や音声も送ることができます．
+
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
