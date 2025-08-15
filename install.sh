@@ -11,6 +11,6 @@ sudo apt-get update
 sudo apt install -y xterm
 
 cd ../
-git clone -b $ROS_DISTRO-devel https://github.com/TeamSOBITS/sobits_msgs.git
+git clone -b $ROS_DISTRO-devel https://github.com/TeamSOBITS/sobits_interfaces.git
 
 echo "╚══╣ Install: Ollama ROS (FINISHED) ╠══╝"
