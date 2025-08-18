@@ -77,29 +77,29 @@ First, ensure you have the following environment set up before proceeding to the
 ### Installation
 
 1. Navigate to your ROS2 src folder.
-    ```console
+    ```sh
     cd ~/colcon_ws/src/
     ```
 2. Clone this repository.
-    ```console
+    ```sh
     git clone -b humble-devel https://github.com/TeamSOBITS/ollama_ros
     ```
 3. Move into the repository directory.
-    ```console
+    ```sh
     cd ollama_ros/
     ```
 4. Install dependencies.
-    ```console
+    ```sh
     bash install.sh
     ```
 5. Compile the package.
-    ```console
+    ```sh
     cd ~/colcon_ws/
     ```
-    ```console
+    ```sh
     colcon build --symlink-install
     ```
-    ```console
+    ```sh
     source ~/colcon_ws/install/setup.sh
     ```
 
@@ -117,7 +117,7 @@ This section explains how to use this repository.
 ### Model Download
 
 1. Launch [model_download.launch.py](launch/model_download.launch.py).
-    ```console
+    ```sh
     ros2 launch ollama_ros model_download.launch.py
     ```
 2. Download the desired model from the GUI.\

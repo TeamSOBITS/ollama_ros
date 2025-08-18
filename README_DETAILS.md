@@ -97,7 +97,7 @@ sobit_miniという`room_name`ではUserの名前がSOBIT MINIとしてシステ
 これらを踏まえて，部屋や事前プロンプトを用いた簡単な操作方法について説明します．
 
 1. ActionServerを立ち上げる
-    ```console
+    ```sh
     ros2 launch ollama_ros ollama.launch.py
     ```
 

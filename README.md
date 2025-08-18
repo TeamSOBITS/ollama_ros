@@ -73,29 +73,29 @@
 ### インストール方法
 
 1. ROS2の`src`フォルダに移動します．
-    ```console
+    ```sh
     cd ~/colcon_ws/src/
     ```
 2. 本レポジトリをcloneします．
-    ```console
+    ```sh
     git clone -b humble-devel https://github.com/TeamSOBITS/ollama_ros
     ```
 3. レポジトリの中へ移動します．
-    ```console
+    ```sh
     cd ollama_ros/
     ```
 4. 依存パッケージをインストールします．
-    ```console
+    ```sh
     bash install.sh
     ```
 5. パッケージをコンパイルします．
-    ```console
+    ```sh
     cd ~/colcon_ws/
     ```
-    ```console
+    ```sh
     colcon build --symlink-install
     ```
-    ```console
+    ```sh
     source ~/colcon_ws/install/setup.sh
     ```
 
@@ -113,7 +113,7 @@
 ### モデルのダウンロード
 
 1. [model_download.launch.py](launch/model_download.launch.py)を起動する
-    ```console
+    ```sh
     ros2 launch ollama_ros model_download.launch.py
     ```
 2. GUIのから使いたいモデルをダウンロードする\

@@ -99,7 +99,7 @@ In another room, team_introduce, the system knows the team name and the number o
 Based on this, let's explain a simple way to use rooms and pre-prompts.
 
 1. Start the ActionServer.
-    ```console
+    ```sh
     ros2 launch ollama_ros ollama.launch.py
     ```
 
