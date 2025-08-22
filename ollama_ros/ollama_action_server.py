@@ -89,17 +89,15 @@ class ChatAction(Node):
             for i in range(len(goal_handle.request.image)):
                 img = goal_handle.request.image[i]
                 image = self.bridge_.imgmsg_to_cv2(img)
-                # if img.encoding == "rgb8":
-                #     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
                 if img.encoding == 'bgr8':
                     pass
                 elif img.encoding == 'bgra8':
-                    image     = cv2.cvtColor(image, cv2.COLOR_RGBA2RGB)
+                    image = cv2.cvtColor(image, cv2.COLOR_RGBA2RGB)
                 elif img.encoding == 'rgba8':
-                    image     = cv2.cvtColor(image, cv2.COLOR_BGRA2RGB)
+                    image = cv2.cvtColor(image, cv2.COLOR_BGRA2RGB)
                 elif img.encoding == 'rgb8':
-                    image     = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                 else:
                     print("\033[31mEncoding ERROR\033[0m")
                     return response
@@ -115,7 +113,7 @@ class ChatAction(Node):
             print(f"\033[31mError occurred: {e}\033[0m", flush=True)
             response.elapsed_time = 0
             response.result = ""
-            goal_handle.abort()  # 例外が発生した場合、明示的にゴールを中止
+            goal_handle.abort()  # Explicitly abort the goal if an exception occurs
             return response
 
         response.elapsed_time = t
@@ -146,7 +144,7 @@ class ChatAction(Node):
                 else:
                     self.chat_messages_[str(rn)] += [{"role": "assistant", "content": talk["assistant"]}]
 
-# メイン
+
 def main(args=None):
     try:
         rclpy.init(args=args)
