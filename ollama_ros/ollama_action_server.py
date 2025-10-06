@@ -119,7 +119,7 @@ class ChatAction(Node):
         response.elapsed_time = t
         response.result = res
         if goal_handle.request.is_stack:
-            self.chat_messages_[goal_handle.request.room_name] += [{'role': 'assistant', 'content': res}]
+            self.chat_messages_[goal_handle.request.room_name] += [{'role': 'model', 'content': res}]
         else:
             self.chat_messages_[goal_handle.request.room_name] = self.chat_messages_[goal_handle.request.room_name][:-1]
         goal_handle.succeed()
@@ -142,7 +142,7 @@ class ChatAction(Node):
                             else:
                                 self.chat_messages_[str(rn)][-1]["images"] += [self.yaml_folder_path_ + img]
                 else:
-                    self.chat_messages_[str(rn)] += [{"role": "assistant", "content": talk["assistant"]}]
+                    self.chat_messages_[str(rn)] += [{"role": "model", "content": talk["model"]}]
 
 
 def main(args=None):
