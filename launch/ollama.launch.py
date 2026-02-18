@@ -4,6 +4,9 @@ from launch import LaunchDescription
 from launch_ros.actions import Node
 
 def generate_launch_description():
+    pkg_dir = get_package_share_directory("ollama_ros")    
+    config_path = os.path.join(pkg_dir, 'prompt', 'ollama_config.yaml')
+    
     return LaunchDescription([
         Node(
             package='ollama_ros',
@@ -11,7 +14,11 @@ def generate_launch_description():
             name='ollama_action_server',
             output='screen',
             parameters=[
-                {'prompt_file': os.path.join(get_package_share_directory("ollama_ros"), 'prompt', 'base_prompt.yaml')},
+                config_path,
+                {
+                    'prompt_file': os.path.join(pkg_dir, 'prompt', 'base_prompt.yaml'),
+                    'tool_file': os.path.join(pkg_dir, 'prompt', 'ollama_tools.yaml')
+                },
             ]
         ),
     ])

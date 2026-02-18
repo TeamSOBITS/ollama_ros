@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-#coding:utf-8
 import rclpy
 from rclpy.node import Node
 import os
@@ -44,27 +42,25 @@ class ModelDownloader(Node):
             for m in self.can_download_models_info:
                 self.download_models_flag.append(False)
                 for lm in models["models"]:
-                    if m == lm["name"].replace(":latest", ""):
+                    if m == lm["model"].replace(":latest", ""):
                         self.download_models_flag[-1] = True
                         break
             for lm in models["models"]:
                 match_flag = False
                 for m in self.can_download_models_info:
-                    if m == lm["name"].replace(":latest", ""):
+                    if m == lm["model"].replace(":latest", ""):
                         match_flag = True
                         break
                 if not match_flag:
-                    self.can_download_models_info.append(lm["name"].replace(":latest", ""))
+                    self.can_download_models_info.append(lm["model"].replace(":latest", ""))
                     self.download_models_flag.append(True)
         else:
             for m in self.can_download_models_info:
                 self.download_models_flag.append(False)
 
-    # ---- レイアウトのy位置を計算 ----
     def _row_y(self, i):
         return sum(self.row_heights[:i])
 
-    # ---- ウィンドウ高さの更新 ----
     def _update_window_geometry(self):
         min_h = self.row_h_normal * 2
         total_h = sum(self.row_heights)
@@ -72,35 +68,28 @@ class ModelDownloader(Node):
         geometry_y = max(min_h, total_h)
         self.tk.geometry(f"{geometry_x}x{geometry_y}+{(self.width - geometry_x) // 2}+{(self.height - geometry_y) // 2}")
 
-    # ---- 全行の再配置 ----
     def _relayout_all(self):
         self._update_window_geometry()
         for i, w in enumerate(self.row_widgets):
             y = self._row_y(i)
-            # ラベル
             if w.get('label'):
                 w['label'].place_configure(x=460, y=y)
-            # download ボタン
             if w.get('btn_download'):
                 w['btn_download'].place_configure(x=150, y=y)
-            # delete/copy/push
             if w.get('btn_delete'):
                 w['btn_delete'].place_configure(x=150, y=y)
             if w.get('btn_copy'):
                 w['btn_copy'].place_configure(x=250, y=y)
             if w.get('btn_push'):
                 w['btn_push'].place_configure(x=350, y=y)
-            # 進捗
             if w.get('pb'):
                 w['pb'].place_configure(x=150, y=y+22)
             if w.get('status_label'):
                 w['status_label'].place_configure(x=440, y=y+22)
 
-    # ---- GUI 初期構築 ----
     def create_gui(self):
         self._update_window_geometry()
 
-        # 参照配列を初期化
         self.row_widgets = []
         for i, container_info in enumerate(self.can_download_models_info):
             y = self._row_y(i)
@@ -127,15 +116,12 @@ class ModelDownloader(Node):
 
             self.row_widgets.append(row)
 
-        # GUI再起動用ボタン
         Tkinter.Button(self.tk, width=6, text="refresh", command=self.refresh_gui).place(x=0, y=0)
-        # GUI停止用ボタン
         Tkinter.Button(self.tk, width=6, text="close", command=self.quit_gui).place(x=0, y=30)
 
         self.tk.title("[Download] ollama models GUI")
         self.tk.mainloop()
 
-    # ---- 行の拡大/縮小（進捗表示用） ----
     def _expand_row(self, i):
         self.row_heights[i] = self.row_h_expanded
         self._relayout_all()
@@ -144,7 +130,6 @@ class ModelDownloader(Node):
         self.row_heights[i] = self.row_h_normal
         self._relayout_all()
 
-    # ---- 進捗ウィジェット ----
     def _ensure_progress_widgets(self, i):
         w = self.row_widgets[i]
         if w.get('pb') is not None:
@@ -185,7 +170,6 @@ class ModelDownloader(Node):
             self._shrink_row(i)
         self.tk.after(0, _apply)
 
-    # ---- UI 更新ヘルパ ----
     def _set_status(self, i, text):
         def _apply():
             w = self.row_widgets[i]
@@ -220,7 +204,6 @@ class ModelDownloader(Node):
                 pass
         self.tk.after(0, _apply)
 
-    # ---- 行のボタンセットを差し替え ----
     def _switch_row_to_owned(self, i):
         w = self.row_widgets[i]
         y = self._row_y(i)
@@ -261,7 +244,6 @@ class ModelDownloader(Node):
             w['btn_download'].place(x=150, y=y)
         self.download_models_flag[i] = False
 
-    # ---- ダウンロード実体（別スレッド） ----
     def _download_in_thread(self, i):
         model = str(self.can_download_models_info[i])
         w = self.row_widgets[i]
@@ -303,7 +285,6 @@ class ModelDownloader(Node):
             if w.get('btn_download'):
                 self._set_button_state(w['btn_download'], "normal")
 
-    # ---- ボタンクリック処理 ----
     def button_clicked_callback(self, mode, id):
         if mode == "delete":
             ollama.delete(str(self.can_download_models_info[id]))
@@ -324,7 +305,6 @@ class ModelDownloader(Node):
             t.start()
             return
 
-    # ---- GUI 再構築/終了 ----
     def refresh_gui(self):
         self.can_download_models_info = self.can_download_models_info[:]
         self.download_models_flag = []
